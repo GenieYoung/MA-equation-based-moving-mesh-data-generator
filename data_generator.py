@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import firedrake as fd
 from movement import MongeAmpereMover
 
-random.seed(43)
+random.seed(42)
 
 def export_mesh(mesh, label, loc="./"):
     # fig,ax = plt.subplots()
@@ -108,12 +108,12 @@ t0 = time.time()
 for i in range(n_samples):
     print(f"================ Sample {i+1}/{n_samples} ==================")
     u_exact = rand_u_exact()
-    export_ufl_function(mesh, u_exact(mesh), f"u_exact_{100+i}", "u_exact/")
+    export_ufl_function(mesh, u_exact(mesh), f"u_exact_{i}", "u_exact/")
     branch_input_train[i,:] = get_values(mesh, u_exact(mesh))
         
     res = move_mesh(mesh, u_exact)
     output_train[i,:,:] = res.mesh.coordinates.dat.data
-    export_mesh(res.mesh, f"adaptive_mesh_{100+i}", "mesh/")
+    export_mesh(res.mesh, f"adaptive_mesh_{i}", "mesh/")
     
 print(f"Time taken: {time.time() - t0:.2f} seconds")
     
