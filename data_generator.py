@@ -1,6 +1,6 @@
 from utility import *
-from random_function import random_func
-from monitor_function import monitor_func
+from random_function import *
+from monitor_function import *
 from movement import MongeAmpereMover
 
 # build mesh
@@ -16,10 +16,14 @@ t0 = time.time()
 for i in range(n_samples):
     print(f"================ Sample {i+1}/{n_samples} ==================")
 
-    F = random_func()
+    F = random_func_gp(degree=1)
     export_function(F(mesh), f"u_{i}", "u_exact/")
+    # F = random_ufl_func()
+    # export_ufl_function(mesh, F(mesh), f"u_{i}", "u_exact/")
 
-    mover = MongeAmpereMover(mesh, monitor_func(F), method="relaxation", rtol=1e-08)
+    export_ufl_function(mesh, monitor_func1(F)(mesh), "monitor")
+
+    mover = MongeAmpereMover(mesh, monitor_func1(F), method="relaxation", rtol=1e-08)
     mover.move()
     export_mesh(mover.mesh, f"mesh_{i}", "adaptive_mesh/")
 
