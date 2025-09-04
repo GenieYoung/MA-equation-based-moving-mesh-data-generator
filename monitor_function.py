@@ -1,5 +1,5 @@
 import firedrake as fd
-from animate import RiemannianMetric
+from animate import RiemannianMetric, recover_gradient_l2
 from ufl.core.expr import Expr
 
 def monitor_func1(u_func):
@@ -32,20 +32,21 @@ def monitor_func1(u_func):
 def monitor_func2(u_func):
     def monitor(mesh):
         V = fd.FunctionSpace(mesh, "CG", 1)
-        Hnorm = fd.Function(V, name="Hnorm")
-        Hnorm.interpolate(fd.ufl.sqrt(1+0.1*fd.ufl.inner(fd.grad(u_func(mesh)), fd.grad(u_func(mesh)))))
-        Hnorm_max = Hnorm.dat.data.max()
-        #m = (Hnorm - Hnorm_min) / (Hnorm_max - Hnorm_min)
-        m = 10 * Hnorm / Hnorm_max
+        Gnorm = fd.Function(V, name="Gnorm")
+        Gnorm.interpolate(fd.ufl.sqrt(1+0.1*fd.ufl.inner(fd.grad(u_func(mesh)), fd.grad(u_func(mesh)))))
+        Gnorm_max = Gnorm.dat.data.max()
+        m = 1 + 10 * Gnorm / Gnorm_max
         return m
     return monitor
 
 def monitor_func3(u_func):
     def monitor(mesh):
         V = fd.FunctionSpace(mesh, "CG", 2)
-        Hnorm = fd.Function(V, name="Hnorm")
-        Hnorm.interpolate(fd.sqrt(fd.ufl.Dx(u_func(mesh),0)**2 + fd.ufl.Dx(u_func(mesh),1)**2))
-        return Hnorm
+        Gnorm = fd.Function(V, name="Gnorm")
+        grad = recover_gradient_l2(u_func(mesh))
+        Gnorm.interpolate(fd.ufl.sqrt(1+0.1*fd.ufl.inner(grad, grad)))
+        Gnorm_max = Gnorm.dat.data.max()
+        return 1 + 10 * Gnorm / Gnorm_max
     return monitor
 
 def monitor_func4(u_func):

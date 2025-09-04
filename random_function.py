@@ -9,8 +9,8 @@ np.random.seed(seed)
 
 def random_ufl_func(max_dist=6):
     n_dist = random.randint(1, max_dist)
-    x_μ_dict = [random.uniform(0.2,0.8) for i in range(n_dist)]
-    y_μ_dict = [random.uniform(0.2,0.8) for i in range(n_dist)]
+    x_μ_dict = [random.uniform(0,1) for i in range(n_dist)]
+    y_μ_dict = [random.uniform(0,1) for i in range(n_dist)]
     x_σ_dict = [max(round(random.gauss(0.25,0.16),3), 0.125) for i in range(n_dist)]
     y_σ_dict = [max(round(random.gauss(0.25,0.16),3), 0.125) for i in range(n_dist)]
     z_dict = [random.uniform(5,20) for i in range(n_dist)]

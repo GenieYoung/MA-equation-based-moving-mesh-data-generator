@@ -16,14 +16,14 @@ t0 = time.time()
 for i in range(n_samples):
     print(f"================ Sample {i+1}/{n_samples} ==================")
 
-    F = random_func_gp(degree=1)
+    F = random_func(degree=1)
     export_function(F(mesh), f"u_{i}", "u_exact/")
     # F = random_ufl_func()
     # export_ufl_function(mesh, F(mesh), f"u_{i}", "u_exact/")
 
-    export_ufl_function(mesh, monitor_func1(F)(mesh), "monitor")
+    export_ufl_function(mesh, monitor_func2(F)(mesh), "monitor")
 
-    mover = MongeAmpereMover(mesh, monitor_func1(F), method="relaxation", rtol=1e-08)
+    mover = MongeAmpereMover(mesh, monitor_func2(F), method="relaxation", rtol=1e-08)
     mover.move()
     export_mesh(mover.mesh, f"mesh_{i}", "adaptive_mesh/")
 
